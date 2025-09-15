@@ -105,6 +105,12 @@ app.get('/api/canteens/:slug', (req, res) => {
   res.json({ canteen, menu });
 });
 
+app.post('/api/orders', (req, res) => {
+  const { items, total } = req.body;
+  const order = db.createOrder({ items, total });
+  res.json(order);
+});
+
 // Create order
 app.post('/api/orders', (req, res) => {
   try {

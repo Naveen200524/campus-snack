@@ -25,6 +25,7 @@ type CartAction =
   | { type: 'REMOVE_ITEM'; payload: string }
   | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
   | { type: 'CLEAR_CART' }
+  | { type: 'CLEAR_CART_AFTER_ORDER' }
   | { type: 'TOGGLE_CART' }
   | { type: 'OPEN_CART' }
   | { type: 'CLOSE_CART' }
@@ -76,6 +77,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     case 'CLEAR_CART':
       return { ...state, items: [], total: 0 };
     
+    case 'CLEAR_CART_AFTER_ORDER':
+      localStorage.removeItem('campus-eats-cart');
+      return { ...state, items: [], total: 0 };
+
     case 'TOGGLE_CART':
       return { ...state, isOpen: !state.isOpen };
     

@@ -168,9 +168,13 @@ export default function Account() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="orders" className="flex items-center space-x-2">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="recent-orders" className="flex items-center space-x-2">
               <ShoppingBag className="h-4 w-4" />
+              <span>Recent Orders</span>
+            </TabsTrigger>
+            <TabsTrigger value="order-history" className="flex items-center space-x-2">
+              <Clock className="h-4 w-4" />
               <span>Order History</span>
             </TabsTrigger>
             <TabsTrigger value="favorites" className="flex items-center space-x-2">
@@ -183,13 +187,75 @@ export default function Account() {
             </TabsTrigger>
           </TabsList>
 
+          {/* Recent Orders Tab */}
+          <TabsContent value="recent-orders" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <ShoppingBag className="h-5 w-5" />
+                  <span>Recent Orders</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {storedOrders.length > 0 ? (
+                  storedOrders.map((order) => (
+                    <div
+                      key={`stored-${order.id}`}
+                      className="p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                      onClick={() => navigate(`/order-tracking/${order.id}`)}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <div className="flex items-center space-x-2 mb-1">
+                            <Badge variant="outline" className="font-mono">
+                              {order.id}
+                            </Badge>
+                            <Badge className="bg-success text-success-foreground">
+                              Completed
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            {order.canteen} • {order.date} at {order.time}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold">₹{order.total}</p>
+                          <ArrowRight className="h-4 w-4 ml-auto mt-1 text-muted-foreground" />
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        {order.items.map((item, index) => (
+                          <div key={index} className="flex justify-between text-sm text-muted-foreground">
+                            <span>{item.quantity}x {item.name}</span>
+                            <span>₹{item.price * item.quantity}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <ShoppingBag className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
+                    <h3 className="font-semibold mb-2">No Recent Orders</h3>
+                    <p className="text-muted-foreground mb-4">
+                      You haven't placed any orders recently.
+                    </p>
+                    <Button onClick={() => navigate('/')}>
+                      Browse Canteens
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* Order History Tab */}
           <TabsContent value="orders" className="space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Clock className="h-5 w-5" />
-                  <span>Recent Orders</span>
+                  <span>Order History</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">

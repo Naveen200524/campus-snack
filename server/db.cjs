@@ -52,4 +52,23 @@ function envInit() {
   `);
 }
 
+function createOrder({ items, total }) {
+  const orderId = `CE-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.floor(1000 + Math.random() * 9000)}`;
+  const estimatedTime = Math.floor(Math.random() * (25 - 10 + 1)) + 10;
+  
+  const insertOrder = db.prepare('INSERT INTO orders (id, created_at, total, status, canteen_name) VALUES (?, ?, ?, ?, ?)');
+  const insertItem = db.prepare('INSERT INTO order_items (id, order_id, item_id, name, quantity, price, image, canteen_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+
+  db.transaction(() => {
+    insertOrder.run(orderId, new Date().toISOString(), total, 'completed', items[0].canteenName);
+    for (const item of items) {
+      insertItem.run(`${orderId}-${item.id}`, orderId, item.id, item.name, item.quantity, item.price, item.image, item.canteenName);
+    }
+  })();
+
+  return { orderId, estimatedTime };
+}
+
+db.createOrder = createOrder;
+
 module.exports = db;

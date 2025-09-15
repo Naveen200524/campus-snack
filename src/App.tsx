@@ -9,6 +9,7 @@ import CartDrawer from "@/components/CartDrawer";
 import Home from "./pages/Home";
 import CanteenPage from "./pages/CanteenPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import OrderTracking from "./pages/OrderTracking";
 import Account from "./pages/Account";
@@ -33,7 +34,7 @@ const App = () => (
               <Route path="/" element={<Home />} />
               <Route path="/canteen/:slug" element={<CanteenPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
+              <Route path="/order-confirmation/:orderId" element={<OrderConfirmationPage />} />
               <Route path="/order-tracking/:orderId" element={<OrderTracking />} />
               <Route path="/account" element={<Account />} />
               <Route path="/profile" element={<UserProfile />} />

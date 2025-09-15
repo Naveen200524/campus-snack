@@ -179,29 +179,30 @@ export default function CartDrawer() {
                     <span>₹{state.total.toFixed(2)}</span>
                   </div>
                 </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="grid gap-2">
                   <Button 
-                    variant="outline"
-                    onClick={handleCheckout}
-                    disabled={state.items.length === 0}
-                  >
-                    <CreditCard className="h-4 w-4 mr-2" />
-                    Checkout
-                  </Button>
-                  <Button 
-                    className="btn-hero"
-                    onClick={handlePlaceOrder}
-                    disabled={state.items.length === 0 || placing}
+                    onClick={handlePlaceOrder} 
+                    disabled={placing}
+                    size="lg"
                   >
                     {placing ? (
-                      <span className="inline-flex items-center">
-                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
-                        Placing...
-                      </span>
+                      <>
+                        <Check className="mr-2 h-4 w-4 animate-pulse" />
+                        Placing Order...
+                      </>
                     ) : (
-                      <><Check className="h-4 w-4 mr-2" />Order</>
+                      <>
+                        <CreditCard className="mr-2 h-4 w-4" />
+                        Place Order
+                      </>
                     )}
+                  </Button>
+                  <Button 
+                    onClick={handleCheckout} 
+                    variant="outline"
+                    size="lg"
+                  >
+                    Checkout
                   </Button>
                 </div>
               </div>
