@@ -1,4 +1,4 @@
-const canteens = require('./canteens.json');
+const canteens = require('./canteen-data.json');
 
 const toBool = (n) => (n ? true : false);
 
