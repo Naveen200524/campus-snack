@@ -68,7 +68,12 @@ export default function CanteenPage() {
   }, [slug]);
 
   const addToCart = (item: MenuItem) => {
-    dispatch({ type: 'ADD_ITEM', payload: item });
+    const cartItem = {
+      ...item,
+      canteenId: canteen.id,
+      canteenName: canteen.name,
+    };
+    dispatch({ type: 'ADD_ITEM', payload: cartItem });
     toast({
       title: "Added to cart",
       description: `${item.name} has been added to your cart.`,
