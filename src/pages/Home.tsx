@@ -29,7 +29,7 @@ export default function Home() {
     // Load canteens from backend API
     (async () => {
       try {
-        const res = await fetch('/canteen-data.json');
+        const res = await fetch('/api/canteens');
         const data: Canteen[] = await res.json();
         setCanteens(data);
         setFilteredCanteens(data);
