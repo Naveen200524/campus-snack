@@ -34,12 +34,29 @@ export default function CanteenPage() {
     (async () => {
       try {
         if (!slug) return;
-        const res = await fetch(`/api/canteens/${slug}`);
-        if (!res.ok) {
-          setCanteenData(null);
+        
+        // Fetch both canteens and menus
+        const [canteensRes, menusRes] = await Promise.all([
+          fetch('/canteen-data.json'),
+          fetch('/menu-data.json')
+        ]);
+
+        if (!canteensRes.ok || !menusRes.ok) {
+          throw new Error('Failed to load data');
+        }
+
+        const canteens = await canteensRes.json();
+        const menus = await menusRes.json();
+
+        // Find the specific canteen by slug
+        const canteen = canteens.find((c: Canteen) => c.slug === slug);
+
+        if (canteen) {
+          // Get the menu for this canteen
+          const menu = menus[canteen.id] || [];
+          setCanteenData({ canteen, menu });
         } else {
-          const data = await res.json();
-          setCanteenData(data);
+          setCanteenData(null);
         }
       } catch (e) {
         console.error('Failed to load canteen', e);
