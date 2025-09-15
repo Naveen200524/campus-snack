@@ -1,4 +1,4 @@
-const { initDb } = require('./db');
+const canteens = require('./canteens.json');
 
 const toBool = (n) => (n ? true : false);
 
@@ -19,10 +19,7 @@ module.exports = function handler(req, res) {
   }
 
   try {
-    const db = initDb();
-    const rows = db.prepare('SELECT * FROM canteens').all();
-    
-    const data = rows.map(r => ({
+    const data = canteens.map(r => ({
       id: r.id,
       name: r.name,
       slug: r.slug,
