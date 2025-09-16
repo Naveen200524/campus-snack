@@ -30,16 +30,30 @@ export default function Home() {
     (async () => {
       try {
         const res = await fetch('/api/canteens');
-        const data: Canteen[] = await res.json();
-        setCanteens(data);
-        setFilteredCanteens(data);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        // Ensure data is an array
+        const canteensData = Array.isArray(data) ? data : [];
+        setCanteens(canteensData);
+        setFilteredCanteens(canteensData);
       } catch (e) {
         console.error('Failed to load canteens', e);
+        // Set empty arrays as fallback
+        setCanteens([]);
+        setFilteredCanteens([]);
       }
     })();
   }, []);
 
   useEffect(() => {
+    // Ensure canteens is an array before filtering
+    if (!Array.isArray(canteens)) {
+      setFilteredCanteens([]);
+      return;
+    }
+
     const filtered = canteens.filter(canteen =>
       canteen.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       canteen.description.toLowerCase().includes(searchTerm.toLowerCase())
