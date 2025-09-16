@@ -99,7 +99,7 @@ export default function Home() {
             </p>
           </div>
 
-          {filteredCanteens.length === 0 ? (
+          {!Array.isArray(filteredCanteens) || filteredCanteens.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg">
                 No canteens found matching "{searchTerm}"

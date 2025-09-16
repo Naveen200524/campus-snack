@@ -20,8 +20,8 @@ module.exports = function handler(req, res) {
     const db = initDb();
     const { items, total } = req.body;
 
-    if (!items || !total) {
-      res.status(400).json({ error: 'Items and total are required' });
+    if (!Array.isArray(items) || typeof total !== 'number') {
+      res.status(400).json({ error: 'Items (array) and total (number) are required', orderId: null, estimatedTime: null });
       return;
     }
 
@@ -32,7 +32,7 @@ module.exports = function handler(req, res) {
     const insertItem = db.prepare('INSERT INTO order_items (id, order_id, item_id, name, quantity, price, image, canteen_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
 
     db.transaction(() => {
-      insertOrder.run(orderId, new Date().toISOString(), total, 'completed', items[0].canteenName || 'Campus Canteen');
+      insertOrder.run(orderId, new Date().toISOString(), total, 'completed', items[0]?.canteenName || 'Campus Canteen');
       for (const item of items) {
         insertItem.run(`${orderId}-${item.id}`, orderId, item.id, item.name, item.quantity, item.price, item.image, item.canteenName);
       }
@@ -41,6 +41,6 @@ module.exports = function handler(req, res) {
     res.status(200).json({ orderId, estimatedTime });
   } catch (error) {
     console.error('Error creating order:', error);
-    res.status(500).json({ error: 'Failed to create order' });
+    res.status(500).json({ error: 'Failed to create order', orderId: null, estimatedTime: null });
   }
 }

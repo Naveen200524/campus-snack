@@ -5,12 +5,19 @@ import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export default function Header() {
   const { state, dispatch } = useCart();
   const itemCount = state.items.reduce((total, item) => total + item.quantity, 0);
   const navigate = useNavigate();
-  const { user, signInWithGoogle, signOut } = useAuth();
+  const { user, signInWithEmail, signOut } = useAuth();
+  const [showLogin, setShowLogin] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b">
@@ -40,10 +47,53 @@ export default function Header() {
               <Button variant="outline" size="sm" onClick={signOut}>Logout</Button>
             </div>
           ) : (
-            <Button variant="ghost" size="sm" className="hidden sm:flex" onClick={signInWithGoogle}>
-              <User className="h-4 w-4 mr-2" />
-              Login with Google
-            </Button>
+            <div className="hidden sm:flex items-center space-x-2">
+              {showLogin ? (
+                <form onSubmit={async (e) => {
+                  e.preventDefault();
+                  const success = await signInWithEmail(email, password);
+                  if (success) {
+                    setShowLogin(false);
+                    setEmail('');
+                    setPassword('');
+                    setLoginError('');
+                  } else {
+                    setLoginError('Invalid email or password');
+                  }
+                }} className="flex items-center space-x-2">
+                  <div>
+                    <Label htmlFor="email" className="sr-only">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-32"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="password" className="sr-only">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-32"
+                    />
+                  </div>
+                  <Button type="submit" size="sm">Login</Button>
+                  <Button type="button" variant="outline" size="sm" onClick={() => setShowLogin(false)}>Cancel</Button>
+                  {loginError && <span className="text-red-500 text-sm">{loginError}</span>}
+                </form>
+              ) : (
+                <Button variant="ghost" size="sm" onClick={() => setShowLogin(true)}>
+                  <User className="h-4 w-4 mr-2" />
+                  Login
+                </Button>
+              )}
+            </div>
           )}
 
           {/* Cart Button */}

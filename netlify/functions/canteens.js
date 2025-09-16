@@ -26,6 +26,10 @@ module.exports = function handler(req, res) {
   }
 
   try {
+    if (!Array.isArray(canteens)) {
+      res.status(200).json([]);
+      return;
+    }
     const data = canteens.map(r => ({
       id: r.id,
       name: r.name,
@@ -41,6 +45,6 @@ module.exports = function handler(req, res) {
     res.status(200).json(data);
   } catch (error) {
     console.error('Error fetching canteens:', error);
-    res.status(500).json({ error: 'Failed to fetch canteens' });
+    res.status(500).json({ error: 'Failed to fetch canteens', canteens: [] });
   }
 }

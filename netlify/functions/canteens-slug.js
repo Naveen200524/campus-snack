@@ -52,11 +52,12 @@ module.exports = function handler(req, res) {
 
     const canteen = canteens.find((c) => c.slug === slug);
     if (!canteen) {
-      res.status(404).json({ error: 'Canteen not found' });
+      res.status(404).json({ error: 'Canteen not found', menu: [] });
       return;
     }
 
-    const menu = menus[canteen.id] || [];
+    let menu = menus[canteen.id];
+    if (!Array.isArray(menu)) menu = [];
 
     const data = {
       canteen: {

@@ -1,6 +1,4 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { auth, googleProvider } from '@/lib/firebase';
-import { signInWithPopup, signOut as fbSignOut, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 
 export interface UserInfo {
   id: string;
@@ -11,7 +9,7 @@ export interface UserInfo {
 
 interface AuthContextValue {
   user: UserInfo | null;
-  signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<boolean>;
   signOut: () => void;
 }
 
@@ -22,33 +20,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (fbUser: FirebaseUser | null) => {
-      if (fbUser) {
-        setUser({
-          id: fbUser.uid,
-          name: fbUser.displayName || fbUser.email || 'Google User',
-          email: fbUser.email || '',
-          avatarUrl: fbUser.photoURL || undefined,
-        });
-      } else {
-        setUser(null);
-      }
-    });
-    return () => unsub();
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
   }, []);
 
-  const signInWithGoogle = async () => {
-    await signInWithPopup(auth, googleProvider);
-    // onAuthStateChanged will update user state
+  const signInWithEmail = async (email: string, password: string): Promise<boolean> => {
+    // Mock authentication: accept test@example.com / password
+    if (email === 'test@example.com' && password === 'password') {
+      const userInfo: UserInfo = {
+        id: '1',
+        name: 'Test User',
+        email: email,
+        avatarUrl: undefined,
+      };
+      setUser(userInfo);
+      localStorage.setItem('user', JSON.stringify(userInfo));
+      return true;
+    }
+    return false;
   };
 
   const signOut = () => {
-    fbSignOut(auth);
-    // onAuthStateChanged will update user state
+    setUser(null);
+    localStorage.removeItem('user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, signInWithEmail, signOut }}>
       {children}
     </AuthContext.Provider>
   );

@@ -148,7 +148,7 @@ export default function CanteenPage() {
       <div className="container mx-auto px-4 py-8">
         <h2 className="text-2xl font-bold mb-6">Menu</h2>
         
-        {menu.length === 0 ? (
+        {!Array.isArray(menu) || menu.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground text-lg">No menu items available at the moment.</p>
           </div>
