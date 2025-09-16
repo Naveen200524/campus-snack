@@ -35,8 +35,8 @@ export default function CanteenPage() {
       try {
         if (!slug) return;
         
-        // Fetch canteen data from API
-        const response = await fetch(`/api/canteens/${slug}`);
+        // Fetch canteen data from simple API
+        const response = await fetch(`http://localhost:3000/api/canteens/${slug}`);
 
         if (!response.ok) {
           throw new Error('Failed to load canteen data');

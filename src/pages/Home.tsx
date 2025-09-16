@@ -26,10 +26,10 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Load canteens from backend API
+    // Load canteens from simple backend API
     (async () => {
       try {
-        const res = await fetch('/api/canteens');
+        const res = await fetch('http://localhost:3000/api/canteens');
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
@@ -39,7 +39,7 @@ export default function Home() {
         setCanteens(canteensData);
         setFilteredCanteens(canteensData);
       } catch (e) {
-        console.error('Failed to load canteens', e);
+        console.error('Failed to load canteens:', e);
         // Set empty arrays as fallback
         setCanteens([]);
         setFilteredCanteens([]);
